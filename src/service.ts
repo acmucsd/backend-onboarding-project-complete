@@ -1,28 +1,12 @@
+import { Connection } from 'typeorm';
 import { v4 } from 'uuid';
+import { Item } from './models/Item';
 
-interface Item {
-  name: string,
-  price: number,
-  uuid: string
-}
-
-/**
- * Our "Database". In the real world, we'd be using something like MongoDB or PostgreSQL, 
- * and use an ORM like Typeorm to manage the relationship, but this tutorial's primary goal 
- * is to get you familar with how requests and servers work at a high level
- * 
- * We would have a DAO / Repo to manage this normally, but that would be a bit overkill for this app
- */
-const db: Record<string, Item> = {};
-
-export const createItem = (name: string, price: number) => {
-  if (name in db) {
-    throw new Error('item already exists!');
-  }
-  db[name] = {
-    name,
-    price,
-    uuid: v4()
-  };
-  return db[name].uuid;
+export const createItem = async (conn: Connection, name: string, price: number) => {
+  const item = new Item();
+  item.name = name;
+  item.description = "TODO: FILL THIS OUT";
+  item.price = price;
+  const createdItem = await conn.manager.save(item);
+  return createdItem.uuid;
 };

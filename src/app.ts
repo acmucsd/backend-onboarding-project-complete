@@ -4,6 +4,7 @@ import "reflect-metadata" // required for typeorm
 import { createConnection } from "typeorm";
 import { Item } from './models/Item';
 import { router } from './controller';
+import { Order } from './models/Order';
 
 const app = Express();
 const port = 3000;
@@ -20,7 +21,8 @@ const main = async () => {
     password: "password",
     database: "testdb",
     entities: [
-      Item
+      Item,
+      Order
     ],
     synchronize: true,
     logging: false

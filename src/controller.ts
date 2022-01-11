@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import path from "path";
-import { createItem } from "./service";
+import { createItem, deleteItem, getItems } from "./service";
 
 export const router = Router();
 
@@ -25,7 +25,14 @@ router.get('/', (req, res) => {
 //   return res.status(401).send("Unauthorized");
 // });
 
-// handle all POST requests that match '/'
+// Item Routes
+
+router.get('/items', async (req, res) => {
+  return res.json(
+    await getItems(req.dbConnection)
+  );
+});
+
 router.post('/item', async (req: Request, res: Response) => {
   if (!('name' in req.body) || !('price' in req.body)) {
     res.status(400).send('Missing required variables!');
@@ -40,3 +47,12 @@ router.post('/item', async (req: Request, res: Response) => {
     uuid
   });
 });
+
+router.delete('/items/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  if (!uuid) {
+    res.status(400).send("bad uuid");
+  }
+  await deleteItem(req.dbConnection, uuid);
+  res.send("success")
+})

@@ -17,13 +17,18 @@ app.use(bodyParser.json()); // regular json payloads
 app.use(bodyParser.urlencoded({ extended: true })); // html form payloads
 
 const main = async () => {
-  const conn = await createConnection({
-    type: 'postgres',
-    host: "localhost",
+  const options = process.env["DATABASE_URL"] ? {
+    url: process.env["DATABASE_URL"],
+  } : {
+    host: process.env["DATABASE_URL"],
     port: 5432,
     username: "test",
     password: "password",
     database: "testdb",
+  };
+
+  const conn = await createConnection({
+    ...options, type: 'postgres',
     entities: [
       Item,
       Order,
@@ -31,7 +36,7 @@ const main = async () => {
     ],
     synchronize: true,
     logging: false
-  });
+  })
 
   // ensure every request has a db connection
   app.use((req, _res, next) => {

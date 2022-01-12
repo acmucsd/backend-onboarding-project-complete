@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, OneToMany, BaseEntity } from 'typeorm';
+import { Order } from './Order';
 
 @Entity()
 export class Item extends BaseEntity {
@@ -13,4 +14,7 @@ export class Item extends BaseEntity {
 
   @Column({ type: 'float' })
   price: number
+
+  @OneToMany(() => Order, (order) => order.item)
+  orders: Order[]
 }

@@ -2,12 +2,16 @@ import Express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import "reflect-metadata" // required for typeorm
 import { createConnection } from "typeorm";
+import cors from 'cors'
 import { Item } from './models/Item';
 import { router } from './controller';
 import { Order } from './models/Order';
+import { User } from './models/User';
 
 const app = Express();
-const port = 3000;
+const port = process.env.PORT || 4000;
+
+app.use(cors())
 
 app.use(bodyParser.json()); // regular json payloads
 app.use(bodyParser.urlencoded({ extended: true })); // html form payloads
@@ -22,7 +26,8 @@ const main = async () => {
     database: "testdb",
     entities: [
       Item,
-      Order
+      Order,
+      User,
     ],
     synchronize: true,
     logging: false

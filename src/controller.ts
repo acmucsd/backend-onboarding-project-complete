@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import path from "path";
-import { createItem, deleteItem, getItems } from "./service";
+import { createItem, createOrder, createUser, deleteItem, getItems, getOrder, getOrdersForUser, getUser, getUsers, loginUser } from "./service";
 
 export const router = Router();
 
@@ -34,15 +34,16 @@ router.get('/items', async (req, res) => {
 });
 
 router.post('/item', async (req: Request, res: Response) => {
-  if (!('name' in req.body) || !('price' in req.body)) {
+  if (!('name' in req.body) || !('price' in req.body) || !('description' in req.body)) {
     res.status(400).send('Missing required variables!');
   }
   const name = req.body.name as string;
+  const description = req.body.description as string;
   const price = Number(req.body.price);
-  if (name.length < 0 || name.length > 26 || isNaN(price)) {
+  if (name.length < 0 || name.length > 26 || description.length < 0 || isNaN(price)) {
     return res.status(400).send('Invalid argument shape!');
   }
-  const uuid = await createItem(req.dbConnection, name, price);
+  const uuid = await createItem(req.dbConnection, name, description, price);
   return res.send({
     uuid
   });
@@ -54,5 +55,43 @@ router.delete('/items/:uuid', async (req, res) => {
     res.status(400).send("bad uuid");
   }
   await deleteItem(req.dbConnection, uuid);
-  res.send("success")
+  res.send("success");
+});
+
+router.post('/order', async (req, res) => {
+  const { itemId, userId } = req.body;
+  res.send(await createOrder(req.dbConnection, itemId, userId));
+});
+
+router.get('/orders', async (req, res) => {
+  const userId = req.query.userId as string;
+  if (userId && userId.length > 0) {
+    return res.send(await getOrdersForUser(req.dbConnection, userId))
+  } else {
+    return res.status(400).send("bad user status");
+  }
 })
+
+router.get('/orders/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  res.send(await getOrder(req.dbConnection, uuid));
+});
+
+router.post('/user', async (req, res) => {
+  const { username, password } = req.body;
+  res.send(await createUser(req.dbConnection, username, password));
+});
+
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  res.send(await loginUser(req.dbConnection, username, password));
+});
+
+router.get('/users', async (req, res) => {
+  res.send(getUsers(req.dbConnection));
+});
+
+router.get('/users/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  res.send(await getUser(req.dbConnection, uuid));
+});

@@ -7,7 +7,7 @@ export class Order extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid: string
 
-  @ManyToOne(() => Item)
+  @ManyToOne(() => Item, (item) => item.orders, { onDelete: "CASCADE" })
   item: Item
 
   @ManyToOne(() => User)

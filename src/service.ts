@@ -4,10 +4,10 @@ import { Item } from './models/Item';
 import { Order } from './models/Order';
 import { User } from './models/User';
 
-export const createItem = async (conn: Connection, name: string, price: number) => {
+export const createItem = async (conn: Connection, name: string, description: string, price: number) => {
   const item = new Item();
   item.name = name;
-  item.description = "TODO: FILL THIS OUT";
+  item.description = description;
   item.price = price;
   const createdItem = await conn.manager.save(item);
   return createdItem.uuid;
@@ -19,7 +19,7 @@ export const getItems = async (conn: Connection): Promise<Item[]> => {
 
 export const deleteItem = async (conn: Connection, uuid: string): Promise<void> => {
   await conn.manager.delete(Item, {
-    uuid
+    uuid,
   });
 }
 
@@ -49,6 +49,10 @@ export const getUser = async (conn: Connection, userId: string): Promise<User> =
   return conn.manager.findOne(User, { where: { uuid: userId } });
 }
 
+export const getUsers = async (conn: Connection): Promise<User[]> => {
+  return conn.manager.find<User>(User)
+}
+
 // Order Routes
 export const createOrder = async (conn: Connection, itemId: string, userId: string): Promise<Order> => {
   const order = new Order();
@@ -57,6 +61,17 @@ export const createOrder = async (conn: Connection, itemId: string, userId: stri
   return conn.manager.save(Order, order);
 }
 
-export const getOrder = async (conn: Connection, orderId: string): Promise<Order> => {
-  return conn.manager.findOne(Order, { where: { uuid: orderId } });
+export const getOrder = async (conn: Connection, orderId: string): Promise<Order[]> => {
+  return conn.manager.find(Order, { where: { uuid: orderId } });
+}
+
+export const getOrdersForUser = async (conn: Connection, userId: string): Promise<Order[]> => {
+  console.log({ userId })
+  return conn.manager.find(Order, {
+    where: {
+      user: userId
+    },
+    loadEagerRelations: true,
+    relations: ["item"]
+  });
 }

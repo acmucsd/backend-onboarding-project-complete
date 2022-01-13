@@ -11,7 +11,7 @@ import { User } from './models/User';
 const app = Express();
 const port = process.env.PORT || 4000;
 
-app.use(cors())
+app.use(cors({ credentials: true, origin: true }))
 
 app.use(bodyParser.json()); // regular json payloads
 app.use(bodyParser.urlencoded({ extended: true })); // html form payloads

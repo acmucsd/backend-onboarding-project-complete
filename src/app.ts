@@ -19,6 +19,12 @@ app.use(bodyParser.urlencoded({ extended: true })); // html form payloads
 const main = async () => {
   const options = process.env["DATABASE_URL"] ? {
     url: process.env["DATABASE_URL"],
+    ssl: true,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
   } : {
     host: process.env["DATABASE_URL"],
     port: 5432,

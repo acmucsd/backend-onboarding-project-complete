@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
-    "watch:serve": "ts-node src/app.ts"
+    "watch:serve": "ts-node src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",

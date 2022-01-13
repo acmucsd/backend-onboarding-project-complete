@@ -1,1 +1,1 @@
-web: yarn run watch:serve
+web: yarn start

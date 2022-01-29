@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 //       return next();
 //     }
 //   }
-//   return res.status(401).send("Unauthorized");
+//   return res.status(401).send({ error: true, message: "Unauthorized" });
 // });
 
 // Item Routes
@@ -52,10 +52,10 @@ router.post('/item', async (req: Request, res: Response) => {
 router.delete('/items/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
   if (!uuid) {
-    res.status(400).send("bad uuid");
+    res.status(400).send({ error: true, message: "bad uuid" });
   }
   await deleteItem(req.dbConnection, uuid);
-  res.send("success");
+  res.send({ error: false, message: "success" });
 });
 
 router.post('/order', async (req, res) => {
@@ -68,7 +68,7 @@ router.get('/orders', async (req, res) => {
   if (userId && userId.length > 0) {
     return res.send(await getOrdersForUser(req.dbConnection, userId))
   } else {
-    return res.status(400).send("bad user status");
+    return res.status(400).send({ error: true, message: "bad user status" });
   }
 })
 

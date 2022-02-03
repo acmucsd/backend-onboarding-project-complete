@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/users', async (req, res) => {
-  res.send(getUsers(req.dbConnection));
+  res.send(await getUsers(req.dbConnection));
 });
 
 router.get('/users/:uuid', async (req, res) => {

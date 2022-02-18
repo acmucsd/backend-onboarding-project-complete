@@ -119,3 +119,9 @@ router.get('/users/:uuid', async (req, res) => {
     return res.status(400).send({ error: true, message: "invalid string"});
   }
 });
+
+// error handling
+router.use((err, req, res, next) => {
+  console.error(err);
+  return res.status(500).send({ message: "Something went wrong on our side", error: true, details: JSON.stringify(err)});
+});

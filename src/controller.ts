@@ -4,6 +4,10 @@ import { createItem, createOrder, createUser, deleteItem, getItems, getOrder, ge
 
 export const router = Router();
 
+const checkValidString = (str) => {
+  return str && (typeof str === 'string' || str instanceof String) && str.length > 0;
+};
+
 router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'static', 'index.html'));
 });
@@ -78,17 +82,29 @@ router.get('/orders', async (req, res) => {
 
 router.get('/orders/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
-  res.send(await getOrder(req.dbConnection, uuid));
+  if (checkValidString(uuid)) {
+    return res.send(await getOrder(req.dbConnection, uuid));
+  } else {
+    return res.status(400).send({ error: true, message: "invalid string"});
+  }
 });
 
 router.post('/user', async (req, res) => {
   const { username, password } = req.body;
-  res.send(await createUser(req.dbConnection, username, password));
+  if (checkValidString(username) && checkValidString(password)) {
+    return res.send(await createUser(req.dbConnection, username, password));
+  } else {
+    return res.status(400).send({ error: true, message: "invalid string"});
+  }
 });
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  res.send(await loginUser(req.dbConnection, username, password));
+  if (checkValidString(username) && checkValidString(password)) {
+    res.send(await loginUser(req.dbConnection, username, password));
+  } else {
+    return res.status(400).send({ error: true, message: "invalid string"});
+  }
 });
 
 router.get('/users', async (req, res) => {
@@ -97,5 +113,9 @@ router.get('/users', async (req, res) => {
 
 router.get('/users/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
-  res.send(await getUser(req.dbConnection, uuid));
+  if (checkValidString(uuid)) {
+    res.send(await getUser(req.dbConnection, uuid));
+  } else {
+    return res.status(400).send({ error: true, message: "invalid string"});
+  }
 });

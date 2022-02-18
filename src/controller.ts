@@ -60,7 +60,11 @@ router.delete('/items/:uuid', async (req, res) => {
 
 router.post('/order', async (req, res) => {
   const { itemId, userId } = req.body;
-  res.send(await createOrder(req.dbConnection, itemId, userId));
+  if (itemId && userId) {
+    res.send(await createOrder(req.dbConnection, itemId, userId));
+  } else {
+    res.status(400).send({ error: true, message: "invalid parameters"});
+  }
 });
 
 router.get('/orders', async (req, res) => {
